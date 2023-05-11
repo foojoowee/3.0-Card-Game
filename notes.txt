@@ -1,0 +1,42 @@
+CSS
+
+1. Normally this code below will be the standard practice:
+
+Code Snippet:
+
+background: url('');
+background-size: cover;
+bcakground-position: center;
+background-repeat: no-repeat;
+
+However, since now the background is somewhat interactive with the other divs, i must make sure that the aspect ratio does not mess up when we change the window viewport
+
+
+2. To start an animation based on the position of an element or div
+
+
+3. This programme is set so that the dealer automatically draws a card when his total is below a certain value.
+
+I tried to add a delay for the code using the following:
+
+        while (dealerValueTotal < 16){
+            setTimeout(() => {
+                dealerHand.push(decklist.pop());
+                dealerHandCount += 1;
+                let newDiv = document.createElement("div");
+                newDiv.className = "added-hand-card";
+                newDiv.innerHTML = `<img src="Cards/cards/${Object.keys(dealerHand[dealerHandCount-1])[0]}.png" alt=""></img>`;
+                dealer.appendChild(newDiv);
+                dealerValueTotal = 0;
+                playerValueTotal = 0;
+                countValue();
+                gameText.innerHTML = "Dealer is still thinking"
+            }, 2000);
+        }
+
+but the while loop runs synchronously and does not allow the JS event loop to process other tasks, such as rendering the updated DOM. The iterations of the loop will run instantly and there wont be delay.
+
+Hence, we replace the setTimeOuT(function(),interval) with:
+
+ await new Promise(resolve => setTimeout(resolve, 2000))
+

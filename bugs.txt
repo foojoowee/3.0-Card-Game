@@ -1,0 +1,11 @@
+1. Referencing Issue
+
+How do i reference the content of the pTag here?
+
+<p class="dealer-hand-value">Value is: </p>
+
+
+const dealerValue = document.getElementsByClassName("dealer-hand-value");
+console.log(dealerValue[0].textContent)
+
+We are dealing with a class, so we need to remember to reference [0], which is the first item in the class
