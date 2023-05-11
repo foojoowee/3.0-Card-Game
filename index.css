@@ -17,7 +17,7 @@
     flex-direction: column;
     width: 100vw;
     height: 100vh;
-    background: url("/Cards/casino-bg.jpg");
+    background: url(Cards/casino-bg.jpg);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -200,8 +200,7 @@
 }
 
 #play-again button:hover{
-    color: rgb(194, 189, 189);
-    background: rgb(0, 0, 0);
+    background: rgb(139, 132, 132);
     cursor: pointer;
 }
 
@@ -228,6 +227,14 @@
     transition: background 0.4s;
     width: 100px;
     margin: 0px 30px;
+}
+
+#hit-button:hover{
+    background: rgb(97, 184, 97);
+}
+
+#stick-button:hover{
+    background: rgb(226, 152, 147);
 }
 
 #reset{
