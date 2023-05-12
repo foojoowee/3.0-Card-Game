@@ -148,17 +148,22 @@
 }
 
 #bet{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     position: relative;
-    top: 10%;
-    margin: 20px 10px;
+    top: 2%;
+    margin: 10px auto;
     color: rgb(0, 0, 0);
     padding: 0px 20px;
     font-size: 1.4rem;
     font-weight: 600;
     border-radius: 10px;
-    text-align: center;
 }
 
+#bet p{
+    text-align: center;
+}
 
 #bet input{
     width: 60px;
@@ -184,11 +189,10 @@
 #play-again{
     display: none;
     text-align: center;
-
 }
 
 #play-again button{
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     padding: 10px 20px;
     border-radius: 5px;
     font-weight: 600;
@@ -205,14 +209,28 @@
 }
 
 .dealer-hand-value{
+    display: flex;
+    margin: 0px auto;
+    justify-content: center;
     text-align: center;
     margin-top: 3px;
     font-size: 1.5rem;
+    width: fit-content;
+    padding: 0px 10px;
+    border-radius: 10px;
+    background: rgb(209, 206, 206);
 }
 
 .player-hand-value{
+    display: flex;
+    justify-content: center;
+    margin: 0px auto;
     text-align: center;
     font-size: 1.5rem;
+    width: fit-content;
+    padding: 0px 10px;
+    border-radius: 10px;
+    background: rgb(209, 206, 206);
 }
 
 #player-action{
@@ -245,14 +263,10 @@
     right: 20%
 }
 
-#preplay{
-    position: relative;
-}
-
 
 #deal-button-container{
     position: relative;
-    margin: 20px 10px;
+    margin: 10px 10px;
     color: rgb(0, 0, 0);
     padding: 0px 20px;
     font-size: 1.6rem;
@@ -296,8 +310,26 @@
     font-size: 1.2rem;
 }
 
+#net-change{
+    display: none;
+    position: absolute;
+    font-size: 1.5rem;
+    top: 120%;
+    left: 30%;
+    color: green;
+}
+
 #player-name{
     border-bottom: 2px solid rgb(80, 78, 78);
+}
+
+#cur-bet{
+    display: flex;
+    position: absolute;
+    bottom: 9%;
+    left: 32%;
+    color: white;
+    font-size: 1.5rem;
 }
 
 
@@ -385,6 +417,17 @@
     }
 }
 
+@keyframes slideIn{
+    0% {
+        opacity: 0;
+        transform: translateY(-100%);
+      }
+    100% {
+        opacity: 1;
+        transform: translateY(0%);
+      }
+}
+
 #buy-in-main{
     display: none;
     position: absolute;
@@ -445,7 +488,7 @@
     width: 175px;
     height: 30px;
     padding: 10px;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     text-align: center;
 }
 

@@ -31,7 +31,6 @@ const cards = [
     "K",
 ]
 
-
 const cardsValue = [
     {"A":11},
     {"2":2},
@@ -89,10 +88,10 @@ function shuffleDeck(){
 window.addEventListener("load", function(){
     shuffleDeck();
 })
-
-const preplay = document.getElementById("preplay");
 const playerButton = document.getElementById("player-action");
 const dealButton = document.getElementById("deal-button");
+const dealButtonContainer = document.getElementById("deal-button-container");
+const betContainer = document.getElementById("bet");
 const hitButton = document.getElementById("hit-button");
 const stickButton = document.getElementById("stick-button");
 const resetButton = document.getElementById("reset-button");
@@ -113,34 +112,42 @@ let dealerAA = false;
 let playerAA = false;
 
 function dealCards(){
-    preplay.style.display = `none`;
-    let cardAudio = new Audio('SFX/card-deal.mp3');
-    cardAudio.play();
-    if (playerHand.length < 1){
-        playerHand.push(decklist.pop());
-        dealerHand.push(decklist.pop());
-        playerHand.push(decklist.pop());
-        dealerHand.push(decklist.pop());
-    
-        for(let i = 0; i < 2; i++){
-            playerCard[i].innerHTML = `<img src="Cards/cards/${Object.keys(playerHand[i])[0]}.png" alt=""></img>`
+    if(bet.value == 0){
+        alert('Please place bet to play');
+    }else if(currentBet > currentBalance/3){
+        alert('You can lose up to 3x, please pick a bet less than 1/3 of your balance');
+        bet.value = "0";
+    }else{
+        dealButtonContainer.style.display = `none`;
+        betContainer.style.display = `none`;
+        let cardAudio = new Audio('./SFX/card-deal.mp3');
+        cardAudio.play();
+        if (playerHand.length < 1){
+            playerHand.push(decklist.pop());
+            dealerHand.push(decklist.pop());
+            playerHand.push(decklist.pop());
+            dealerHand.push(decklist.pop());
+        
+            for(let i = 0; i < 2; i++){
+                playerCard[i].innerHTML = `<img src="Cards/cards/${Object.keys(playerHand[i])[0]}.png" alt=""></img>`
+            }
+
+            player.style.animation = 'popUp 1s';
+            dealer.style.animation = 'popUp 1s';
+            playerButton.style.display = `flex`;
+            dealButton.style.display = `none`;
+            countValue();
+
+        } else{
+            alert("Wait for the hand to end before you deal another!")
         }
-
-        player.style.animation = 'popUp 1s';
-        dealer.style.animation = 'popUp 1s';
-        playerButton.style.display = `flex`;
-        dealButton.style.display = `none`;
-        countValue();
-
-    } else{
-        alert("Wait for the hand to end before you deal another!")
+        setTimeout(() => {
+            initialCheck();
+            if(gameEnd == true){
+                endGame();
+            }
+        }, 50);
     }
-    setTimeout(() => {
-        initialCheck();
-        if(gameEnd == true){
-            endGame();
-        }
-    }, 1000);
 }
 
 function countPlayerValue(){
@@ -229,12 +236,14 @@ function countValue(){
         playerValue[0].textContent = `You bombed with 5 cards. Lose 2x bet!`
         endGame();
     }
+    // setTimeout(() => {
+        if (playerValueTotal < 16){
+            stickButton.disabled = true;
+        } else {
+            stickButton.disabled = false;
+        } 
+    // }, 1000);
 
-    if (playerValueTotal < 16){
-        stickButton.disabled = true;
-    } else {
-        stickButton.disabled = false;
-    }
 
     if (playerHandCount > 2 && playerValueTotal > 20){
         hitButton.disabled = true;
@@ -292,7 +301,7 @@ function countValueDealer(){
 // })
 
 function hit(){
-    let cardAudio = new Audio('SFX/card-deal-2.mp3');
+    let cardAudio = new Audio('./SFX/card-deal-2.mp3');
     cardAudio.play();
     playerHand.push(decklist.pop());
     playerHandCount += 1;
@@ -306,7 +315,7 @@ function hit(){
 const playerAction = document.getElementById("player-action")
 
 function stick(){
-    let stick = new Audio("SFX/stick.mp3");
+    let stick = new Audio("./SFX/stick.mp3");
     stick.play();
     playerAction.style.display = 'none';
     revealDealer();
@@ -324,9 +333,11 @@ const gameText = document.getElementById("game-text")
 async function dealerTurn(){
     gameText.innerHTML = "It's the dealer's turn now!"
     countDealerValue();
+    dealerValue[0].textContent = `Hand Value: ${dealerValueTotal}`;
+    
         while (dealerValueTotal < 17){
             await new Promise(resolve => setTimeout(resolve, 1500));
-            let cardAudio = new Audio('SFX/card-deal-2.mp3');
+            let cardAudio = new Audio('./SFX/card-deal-2.mp3');
             cardAudio.play();
             
             gameText.innerHTML = "Dealer is still thinking";
@@ -351,63 +362,153 @@ function revealDealer(){
 
 
 function endGame(){
+    let oldBalance = currentBalance;
     revealDealer();
-    if(playerAA){
+
+    if(playerAA && !dealerBJ){
         gameText.innerHTML = "You won 3x with pocket Aces!"
+        currentBalance += currentBet*3
+        console.log(1)
     }
-    if(dealerAA){
+    if(dealerAA && !playerBJ){
         gameText.innerHTML = "You lost 3x to pocket Aces!"
+        currentBalance -= currentBet*3
+        console.log(2)
     }
     if (dealerAA && playerAA){
         gameText.innerHTML = "Both of you have Aces, WOW! Its a draw"
+        console.log(3)
     }
     if (dealerAA && playerBJ){
         gameText.innerHTML = "You lost with BlackJack to Aces!"
+        currentBalance -= currentBet*3
+        console.log(4)
     }
     if (playerAA && dealerBJ){
         gameText.innerHTML = "Dealer's BlackJack lost to your Aces!"
+        currentBalance += currentBet*3
+        console.log(5)
     }
     if (playerBJ && dealerBJ){
         gameText.innerHTML = "Both of you have BlackJack, WOW! Its a draw"
+        console.log(6)
     }
 
-    if (playerValueTotal < 22 && dealerValueTotal < 22){
-        if(dealerValueTotal > playerValueTotal){
-            gameText.innerHTML = "Sorry, you got rekt by the dealer"
-        } else if (dealerValueTotal < playerValueTotal){
-            gameText.innerHTML = "Congratulations, you won!"
-        } else{
-            gameText.innerHTML = "You drew with the dealer"
+    if (playerBJ && !dealerBJ && !dealerAA){
+        gameText.innerHTML = "You instantly won with BJ"
+        currentBalance += currentBet*2
+        console.log(7)
+    }
+
+    if (dealerBJ && !playerBJ && !playerAA){
+        gameText.innerHTML = "Dealer instantly won with BJ"
+        currentBalance -= currentBet*2
+        console.log(8)
+    }
+
+    if (dealerHandCount < 5){
+        if (playerValueTotal < 21 && dealerValueTotal < 21){
+            if(dealerValueTotal > playerValueTotal){
+                gameText.innerHTML = "Sorry, you got rekt by the dealer"
+                currentBalance -= currentBet
+                console.log(9)
+            } else if (dealerValueTotal < playerValueTotal){
+                gameText.innerHTML = "Congratulations, you won!"
+                currentBalance += currentBet
+                console.log(10)
+            } else {
+                gameText.innerHTML = "You drew with the dealer"
+                console.log(11)
+            }
+        }
+
+        if (!playerBJ && playerValueTotal == 21 && dealerValueTotal < playerValueTotal){
+            gameText.innerHTML = "You got 21! 2x the moolahs"
+            currentBalance += currentBet*2
+            console.log(12)
+        }
+        if (!dealerBJ && dealerValueTotal == 21 && playerValueTotal < dealerValueTotal){
+            gameText.innerHTML = "Dealer has 21. Pay up double :("
+            currentBalance -= currentBet*2
+            console.log(13)
+        }
+        if (!dealerBJ && playerValueTotal == 21 && dealerValueTotal == 21){
+            gameText.innerHTML = "Its a draw, what are the odds both of you get 21?"
+            console.log(14)
+        }
+
+        if (playerHandCount > 2 && playerValueTotal > 21 && dealerValueTotal < 21){
+            gameText.innerHTML = `You busted! You lost to dealer`
+            currentBalance -= currentBet
+            console.log(15)
+        } else if (playerHandCount > 2 && playerValueTotal > 21 && dealerValueTotal > 21){
+            gameText.innerHTML = `Both you and the dealer busted. It's a draw`
+        } else if(playerValueTotal < 22 && dealerValueTotal > 21 && dealerHandCount > 2){ 
+            gameText.innerHTML = `The dealer busted. You win!`
+            currentBalance += currentBet
+            console.log(16)
         }
     }
-    if (playerHandCount > 2 && playerValueTotal > 21 && dealerValueTotal < 22){
-        gameText.innerHTML = `You busted! You lost to dealer`
-    } else if (playerHandCount > 2 && playerValueTotal > 21 && dealerValueTotal > 21){
-        gameText.innerHTML = `Both you and the dealer busted. It's a draw`
-    } else if(playerValueTotal < 22 && dealerValueTotal > 21 && dealerHandCount > 2){ 
-        gameText.innerHTML = `The dealer busted. You win!`
-    }
+
+
     if (playerHandCount == 5 && playerValueTotal < 22){
         gameText.innerHTML = `Congrats, you win 2x with 5 cards!`
+        currentBalance += currentBet*2
     }
     if (playerHandCount == 5 && playerValueTotal == 21){
         gameText.innerHTML = `Congrats, you win 3x with 5 cards!`
+        currentBalance += currentBet*3
     }
     if (playerHandCount == 5 && playerValueTotal > 21){
         gameText.innerHTML = `What a noob`
+        currentBalance -= currentBet*2
     }
     if (dealerHandCount == 5 && dealerValueTotal < 22){
         gameText.innerHTML = `You lost to the dealer, he drew 5 cards!`
+        currentBalance -= currentBet*2
     }
     if (dealerHandCount == 5 && dealerValueTotal == 21){
         gameText.innerHTML = `You lost 3x to dealer's miracle hand!`
+        currentBalance -= currentBet*3
     }
     if (dealerHandCount == 5 && dealerValueTotal > 21){
         gameText.innerHTML = `Dealer got overzealous and bombed.`
+        currentBalance += currentBet*2
     }
-
+    console.log('Old balance is' + oldBalance);
+    console.log('New balance is' + currentBalance);
+    let netChange = document.getElementById('net-change');
+    if (oldBalance < currentBalance){
+        let start = new Audio("./SFX/win.mp3");
+        start.play();
+        netChange.innerHTML = `+${currentBalance-oldBalance}$`;
+        netChange.style.animation = 'slideIn 2s ease-in';
+        netChange.style.display = `flex`;
+        netChange.style.color = `green`;
+        setTimeout(() => {
+            netChange.style.display = `none`;
+            netChange.style.animation = 'none';
+            currentBalanceText.textContent = `${currentBalance} $`;
+        }, 3000);
+    } else if(oldBalance > currentBalance){
+        let start = new Audio("./SFX/lose.mp3");
+        start.play();
+        netChange.innerHTML = `-${oldBalance-currentBalance}$`;
+        netChange.style.animation = 'slideIn 2s ease-in';
+        netChange.style.display = `flex`;
+        netChange.style.color = `red`;
+        currentBalanceText.textContent = `${currentBalance} $`;
+        setTimeout(() => {
+            netChange.style.display = `none`;
+            netChange.style.animation = 'none';
+        }, 3000);
+    }
+    
+    buyInBalance.textContent = `Your Balance: ${currentBalance} $`;
     playerAction.style.display = 'none';
     playAgain.style.display = `block`;
+    
+    
 }
 
 function playAgainButton(){
@@ -419,7 +520,7 @@ const loadingPage = document.getElementById("loading-page")
 const mainContainer =  document.getElementById("main-container")
 
 function startGame(){
-    let start = new Audio("SFX/start.mp3");
+    let start = new Audio("./SFX/start.mp3");
     start.play();
     loadingPage.style.animation = 'fadeOut 0.5s ease-out'
     setTimeout(() => {
@@ -459,10 +560,15 @@ function buyInOkay(){
 
 let currentBet = 0;
 let bet = document.getElementById("bet-size");
+let curBet = document.getElementById("cur-bet")
 
 function updateBet(){
     currentBet = parseInt(bet.value);
-    console.log(currentBet);
+    if(currentBalance == 0){
+        alert('Please buy-in first before placing a bet!');
+        bet.value = "";
+    }
+    curBet.innerHTML = `<p>Current Bet: ${bet.value} $ </p>`
 }
 
 function add10bet(){
@@ -518,8 +624,8 @@ let currentBalance = 0;
 let currentBalanceText = document.getElementById("player-balance");
 let buyInBalance = document.getElementById("buy-in-balance");
 let buyInInput = document.getElementById("buy-in-input");
-buyInInput.value = "0";
-let chipAudio = new Audio("/Chips/chip-sound.mp3");
+// buyInInput.value = "0";
+let chipAudio = new Audio("./Chips/chip-sound.mp3");
 
 function updateBalance(){
     currentBalance += parseInt(buyInInput.value);
@@ -603,8 +709,9 @@ function reset(){
     gameText.innerHTML = ``;
     player.style.animation = 'none';
     dealer.style.animation = 'none';
-    preplay.style.display = `block`;
     playAgain.style.display = `none`;
+    dealButtonContainer.style.display = `flex`;
+    betContainer.style.display = `flex`;
     gameEnd = false;
     dealerBJ = false;
     playerBJ = false;
