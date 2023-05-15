@@ -644,7 +644,7 @@ function reset(){
     };
     for(let i = 0; i < 2; i++){
         dealerCard[i].innerHTML = `<img src="Cards/cards/BACK.png" alt=""></img>`
-        playerCard[i].innerHTML = `<img src="Cards/cards/back.png" alt=""></img>`
+        playerCard[i].innerHTML = `<img src="Cards/cards/BACK.png" alt=""></img>`
     };
     dealButton.style.display = `block`;
     playerAction.style.display = `none`;
