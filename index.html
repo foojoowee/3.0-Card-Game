@@ -21,12 +21,25 @@
         <div id="author-banner">
             <img src="./Cards/Group 2.png" alt="">
         </div>
-        <image src="./Cards/card-suits.svg"></image>
+        <div class="suits1" >
+            <img src="./Cards/card-suits.svg">
+        </div>
         <div id="startMenu">
             <button onclick="startGame()">Start Game</button>
-            <button onclick="settings()">Settings</button>
+            <button onclick="settingsOpen()">Settings</button>
         </div>
-        <image src="./Cards/card-suits.svg"></image>
+        <div class="suits2" >
+            <img src="./Cards/card-suits.svg">
+        </div>
+
+    </div>
+    <div id="coming-soon">
+        <div id="settings-container">
+            <p>Options are Coming Soon</p>
+            <p>Stay Tuned !</p>
+            <button onclick="settingsClose()">X</button>
+        </div>
+
     </div>
     <div id="buy-in-main">
         <div id="buy-in-container">
@@ -81,7 +94,7 @@
 
 
                 <div id="player-action">
-                    <button id="hit-button" onclick="hit()">Hit</button>
+                    <button id="hit-button" onclick="hit(player1Index)">Hit</button>
                     <button id="stick-button" onclick="stick()">Stick</button>
                 </div>
             </div>
@@ -128,7 +141,7 @@
                 <div id="net-change">+500$</div>
             </div>  
             <div id="main-settings">
-                <button onclick="buyInOpen()">Settings</button>
+                <button onclick="settingsOpen()">Settings</button>
             </div>  
         </div>
     </div>
