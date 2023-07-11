@@ -47,6 +47,10 @@
     display: flex;
 }
 
+#startMenu button{
+    cursor: pointer
+}
+
 #banner{
     height: 100px;
     margin-bottom:  200px;
@@ -627,17 +631,16 @@
         height: 75px;
     }
     #main-table{
+        scale: 0.8;
         min-width: 0px;
-        overflow: hidden;
     }
     #main-settings{
-        left: -12%;
-        top: 2%
+        display: none;
     }
     #reset{
         top: 2%;
-        left: 32%;
-        z-index: 10;
+        left: 20%;
+        z-index: 2;
     }
     #buy-in{
         top: 8%;
