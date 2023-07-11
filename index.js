@@ -446,7 +446,12 @@ function startGame(){
     setTimeout(() => {
         loadingPage.style.display = 'none';
         mainContainer.style.opacity = '1';
+        loadingPage.style.animation = 'none'
     }, 500);
+}
+
+function home(){
+    loadingPage.style.display = 'flex';
 
 }
 
@@ -577,6 +582,7 @@ function updateBalance(){
         currentBalanceText.textContent = `${currentBalance} $`;
         buyInBalance.textContent = `Your Balance: ${currentBalance} $`;
     }
+    buyInInput.value = 0;
 }
 
 function add10(){
